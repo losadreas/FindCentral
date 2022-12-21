@@ -10,8 +10,11 @@ class Central_Pixels_Finder(Image):
         self.dict_image = self.make_x_y_dict()
         self.make_info_by_position()
         self.dict_image = self.adding_quantity()
-        self.dict_colors = make_dict_colors(self.dict_image)
-        self.dict_points = find_central(self.dict_colors, self.dict_image)
+        self.dict_colors = self.make_dict_colors()
+        self.dict_points = self.find_central()
+
+    def central_pixels(self, colour):
+        return self.dict_points[colour]
 
     def make_x_y_dict(self):
         dict_image = {}
@@ -89,3 +92,30 @@ class Central_Pixels_Finder(Image):
                 else:
                     self.dict_image[line][r].append(counter(self.dict_image, line, r)[0])
         return self.dict_image
+
+    def make_dict_colors(self):
+        dict_colors = {}
+        for line, row in self.dict_image.items():
+            for r in row:
+                color = self.dict_image[line][r][0]
+                quantity = self.dict_image[line][r][2]
+                if color in dict_colors:
+                    dict_colors[color].add(quantity)
+                else:
+                    dict_colors[color] = {quantity}
+        for color in dict_colors:
+            dict_colors[color] = max(dict_colors[color])
+        return dict_colors
+
+    def find_central(self):
+        dict_points = {}
+        row_max = self.width
+        for line, row in self.dict_image.items():
+            for r in row:
+                color = self.dict_image[line][r][0]
+                if self.dict_image[line][r][2] == self.dict_colors[color]:
+                    if color in dict_points:
+                        dict_points[color].append(line * row_max + r)
+                    else:
+                        dict_points[color] = [line * row_max + r]
+        return dict_points
