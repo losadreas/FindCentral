@@ -20,14 +20,12 @@ class Central_Pixels_Finder(Image):
             return []
 
     def make_x_y_dict(self):
-        dict_image = {}
+        image = self.pixels.copy()
+        self.dict_image = {}
         for line in range(self.height):
-            start = self.width * line
-            new_list = self.pixels[start:start + self.width]
-            dict_image[line] = {}
+            self.dict_image[line] = {}
             for row in range(self.width):
-                dict_image[line][row] = [new_list.pop(0)]
-        return dict_image
+                    self.dict_image[line][row] = [image.pop(0)]
 
     def make_info_by_position(self):
         row_max = self.width
