@@ -14,13 +14,16 @@ class Central_Pixels_Finder(Image):
         self.dict_points = self.find_central()
 
     def central_pixels(self, colour):
-        return self.dict_points[colour]
+        if colour in self.dict_points:
+            return self.dict_points[colour]
+        else:
+            return []
 
     def make_x_y_dict(self):
         dict_image = {}
         for line in range(self.height):
             start = self.width * line
-            new_list = self.pixels[start:start + 10]
+            new_list = self.pixels[start:start + self.width]
             dict_image[line] = {}
             for row in range(self.width):
                 dict_image[line][row] = [new_list.pop(0)]
