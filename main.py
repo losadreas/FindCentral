@@ -7,7 +7,7 @@ class Image:
 
 class Central_Pixels_Finder(Image):
     def __init__(self):
-        self.dict_image = self.make_x_y_dict()
+        self.make_x_y_dict()
         self.make_info_by_position()
         self.dict_image = self.adding_quantity()
         self.dict_colors = self.make_dict_colors()
