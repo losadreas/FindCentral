@@ -1,3 +1,5 @@
+
+from functools import lru_cache
 class Image:
     def __init__(self, data, w, h):
         self.pixels = data
@@ -9,7 +11,7 @@ class Central_Pixels_Finder(Image):
     def __init__(self):
         self.make_x_y_dict()
         self.make_info_by_position()
-        self.dict_image = self.adding_quantity()
+        self.adding_quantity()
         self.dict_colors = self.make_dict_colors()
         self.dict_points = self.find_central()
 
@@ -25,7 +27,7 @@ class Central_Pixels_Finder(Image):
         for line in range(self.height):
             self.dict_image[line] = {}
             for row in range(self.width):
-                    self.dict_image[line][row] = [image.pop(0)]
+                self.dict_image[line][row] = [image.pop(0)]
 
     def make_info_by_position(self):
         row_max = self.width
@@ -45,54 +47,20 @@ class Central_Pixels_Finder(Image):
                         self.dict_image[line][r].append(0)
 
     def adding_quantity(self):
-        def counter(dict, x, y):
-            list = []
-
-            x_inc = x + 1
-            result = 1
-            trigger = 1
-            while trigger != 0:
-                trigger = dict[x_inc][y][1]
-                result += trigger
-                x_inc += 1
-            list.append(result)
-
-            x_dec = x - 1
-            result = 1
-            trigger = 1
-            while trigger != 0:
-                trigger = dict[x_dec][y][1]
-                result += trigger
-                x_dec = x_dec - 1
-            list.append(result)
-
-            y_inc = y + 1
-            result = 1
-            trigger = 1
-            while trigger != 0:
-                trigger = dict[x][y_inc][1]
-                result += trigger
-                y_inc += 1
-            list.append(result)
-
-            y_dec = y - 1
-            result = 1
-            trigger = 1
-            while trigger != 0:
-                trigger = dict[x][y_dec][1]
-                result += trigger
-                y_dec = y_dec - 1
-            list.append(result)
-            list.sort()
-            return list
-
         for line, row in self.dict_image.items():
             for r in row:
+                max_quantity = 1
                 if self.dict_image[line][r][1] == 0:
                     self.dict_image[line][r].append(0)
                 else:
-                    self.dict_image[line][r].append(counter(self.dict_image, line, r)[0])
-        return self.dict_image
+                    for i in range(1, self.height):
+                        result = self.dict_image[line + i][r][1] + self.dict_image[line - i][r][1] + \
+                                 self.dict_image[line][r - i][1] + self.dict_image[line][r + i][1]
+                        if result < 4:
+                            break
+                        else:
+                            max_quantity += 1
+                    self.dict_image[line][r].append(max_quantity)
 
     def make_dict_colors(self):
         dict_colors = {}
